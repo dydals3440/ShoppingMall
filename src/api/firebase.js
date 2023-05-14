@@ -25,23 +25,23 @@ const dbRef = ref(getDatabase());
 // user정보는 auth에 담겨져있음.
 export function login() {
   signInWithPopup(auth, provider).catch(console.error);
-  // user정보 확인
-  console.log(auth);
 }
 
 export function logout() {
   signOut(auth);
+  console.log(auth);
 }
-// Header에서 선언할 수 있지만, 이런 모든 firebase로직은 파일 안에서만 관리하고, 함수로추출
+// if/else구문을 쓰지말고 삼항연산자로 처리하는 것이 더 좋아보임
+// const updated User = user ? await adminUser(user) : null 그 후 callback(updatedUser)
 export function onUserStateChange(callback) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       // 사용자가 있는 경우에 adminUser를 호출
-      const updatedUser = user ? await adminUser(user) : null;
+      const updatedUser = user && (await adminUser(user));
       callback(updatedUser);
     } else {
-      // else문이 없으면, if를 못나와서, 로그아웃을 해도 ui상 적용이 새로고침이 되지 않는이상 바로 되지 않는다.
-      user = null;
+      const updatedUser = !user && null;
+      callback(updatedUser);
     }
   });
 }
