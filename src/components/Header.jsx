@@ -4,6 +4,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { login, logout, onUserStateChange } from '../api/firebase';
 import { User } from './User';
+import { Button } from './ui/Button';
 
 export const Header = () => {
   const [user, setUser] = useState();
@@ -23,25 +24,17 @@ export const Header = () => {
       <nav className='flex flex-row items-center text-2xl gap-4'>
         <Link to='/products'>Products</Link>
         <Link to='/carts'>Carts</Link>
-        <Link to='/products/new'>
-          <BsFillPencilFill />
-        </Link>
+        {user && user.isAdmin && (
+          <Link to='/products/new'>
+            <BsFillPencilFill />
+          </Link>
+        )}
         {!user ? (
-          <button
-            className='bg-brand p-2 rounded-md text-white  ease-in duration-300 hover:scale-110'
-            onClick={login}
-          >
-            Login
-          </button>
+          <Button text={'LogIn'} onClick={login} />
         ) : (
           <>
             <User user={user} />
-            <button
-              className='bg-brand p-2 rounded-md text-white  ease-in duration-300 hover:scale-110'
-              onClick={logout}
-            >
-              Logout
-            </button>
+            <Button text={'Logout'} onClick={logout} />
           </>
         )}
       </nav>

@@ -39,6 +39,9 @@ export function onUserStateChange(callback) {
       // 사용자가 있는 경우에 adminUser를 호출
       const updatedUser = user ? await adminUser(user) : null;
       callback(updatedUser);
+    } else {
+      // else문이 없으면, if를 못나와서, 로그아웃을 해도 ui상 적용이 새로고침이 되지 않는이상 바로 되지 않는다.
+      user = null;
     }
   });
 }
