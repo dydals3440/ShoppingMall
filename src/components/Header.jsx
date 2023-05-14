@@ -6,21 +6,11 @@ import { login, logout, onUserStateChange } from '../api/firebase';
 import { User } from './User';
 
 export const Header = () => {
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState();
   // , useEffect 훅 내에서 onUserStateChange 함수를 호출하면 페이지가 렌더링될 때 해당 함수가 실행되고, 이때 onAuthStateChanged 메서드가 작동하여 사용자 인증 상태의 변경을 감지합니다. 그리고 인증 상태가 변경되면 전달한 콜백 함수가 호출됩니다.
   useEffect(() => {
-    onUserStateChange((user) => {
-      setUser(user);
-    });
+    onUserStateChange(setUser);
   }, []);
-
-  const handleLogin = () => {
-    // firebase에서 만든 login함수 호출 후, 정보를 받아옴, .then(setUser); 해줄필요없음 firebase에서 처리해줌
-    login();
-  };
-  const handleLogout = () => {
-    logout();
-  };
   return (
     <header className='flex justify-between border-b border-gray-400 p-3'>
       <Link to='/' className='flex font text-4xl text-brand'>
@@ -33,11 +23,13 @@ export const Header = () => {
         <Link to='/products/new'>
           <BsFillPencilFill />
         </Link>
-        <User user={user} />
         {!user ? (
-          <button onClick={handleLogin}>Login</button>
+          <button onClick={login}>Login</button>
         ) : (
-          <button onClick={handleLogout}>Logout</button>
+          <>
+            <User user={user} />
+            <button onClick={logout}>Logout</button>
+          </>
         )}
       </nav>
     </header>
