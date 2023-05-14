@@ -24,11 +24,21 @@ export const Header = () => {
           <BsFillPencilFill />
         </Link>
         {!user ? (
-          <button onClick={login}>Login</button>
+          <button
+            className='bg-brand p-2 rounded-md text-white  ease-in duration-300 hover:scale-110'
+            onClick={login}
+          >
+            Login
+          </button>
         ) : (
           <>
             <User user={user} />
-            <button onClick={logout}>Logout</button>
+            <button
+              className='bg-brand p-2 rounded-md text-white  ease-in duration-300 hover:scale-110'
+              onClick={logout}
+            >
+              Logout
+            </button>
           </>
         )}
       </nav>
