@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
+import { uploadImage } from '../api/upload';
 
 export const NewProducts = () => {
   // 1. 사용자가 입력한 데이터를 담을수 있는 상태 초기화
@@ -8,6 +9,9 @@ export const NewProducts = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // 제품의 사진을 Cloudinary에 업로드 하고 URL을 획득
+    uploadImage(file).then((url) => {
+      console.log(url);
+    });
     // Firebase에 새로운 제품을 추가합니다.
   };
   const handleChange = (e) => {
@@ -64,7 +68,7 @@ export const NewProducts = () => {
         />
         <input
           type='text'
-          name='description'
+          name='options'
           value={product.options ?? ''}
           placeholder='옵션들(콤마(,)로 구분)'
           required
