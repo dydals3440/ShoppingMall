@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { v4 as uuid } from 'uuid';
 import {
   getAuth,
   signInWithPopup,
@@ -6,7 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from 'firebase/auth';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get, set } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,7 +20,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const dbRef = ref(getDatabase());
+const db = getDatabase();
+const dbRef = ref(db);
 
 // async는 항상 promise를 반환하니, .then이나 await을 통해서 실제값을 얻어야하고, 얻은 값들을 return 해주어야 user정보는 null 정보로 상태를 초기화 해 줄 수 있다.
 // user정보는 auth에 담겨져있음.
@@ -46,7 +48,7 @@ export function onUserStateChange(callback) {
   });
 }
 
-// read DB
+// read DB (admin 판별)
 async function adminUser(user) {
   return get(child(dbRef, 'admins'))
     .then((snapshot) => {
@@ -63,4 +65,17 @@ async function adminUser(user) {
     .catch((error) => {
       console.error(error);
     });
+}
+
+// firebase에서 데이터를 읽을때 get 사용시 set
+export async function addNewProduct(product, imageUrl) {
+  const id = uuid();
+  set(ref(db, `products/${id}`), {
+    ...product,
+    id,
+    price: parseInt(product.price),
+    image: imageUrl,
+    // 옵션은 , 로 구분하여 배열로 변경
+    options: product.options.split(','),
+  });
 }
