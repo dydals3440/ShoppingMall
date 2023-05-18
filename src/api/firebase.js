@@ -79,3 +79,18 @@ export async function addNewProduct(product, imageUrl) {
     options: product.options.split(','),
   });
 }
+
+// firebase에서 get을 통해 만든 db에 접근
+export async function getProduct() {
+  return get(ref(db, 'products')) //
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return Object.values(snapshot.val());
+      }
+      // snapshot이 없다면
+      return [];
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
