@@ -70,7 +70,7 @@ async function adminUser(user) {
 // firebase에서 데이터를 읽을때 get 사용시 set
 export async function addNewProduct(product, imageUrl) {
   const id = uuid();
-  set(ref(db, `products/${id}`), {
+  return set(ref(db, `products/${id}`), {
     ...product,
     id,
     price: parseInt(product.price),
