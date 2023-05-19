@@ -13,7 +13,10 @@ export function UserContextProvider({ children }) {
     });
   }, []);
   return (
-    <UserContext.Provider value={{ user, login: login, logout: logout }}>
+    // uid를 사용할 일이 많으니까, user가 있다면 uid만 호출해서 user.uid를 가져올 수 있게 처리
+    <UserContext.Provider
+      value={{ user, uid: user && user.uid, login: login, logout: logout }}
+    >
       {children}
     </UserContext.Provider>
   );

@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { addOrUpdateToCart } from '../api/firebase';
+import { useUserContext } from '../context/UserContext';
 
 export const ProductDetail = () => {
+  // 구조분해할당 가능
+  const { uid } = useUserContext();
+
   const handleSelect = (e) => {
     setSelected(e.target.value);
   };
   const handleClick = () => {
-    // 장바구니에 추가하면 됩니다.
+    // 장바구니에 추가하면 됩니다. (옵션은 배열형태가아닌, 선택된 것만 가져와야함)
+    const product = { id, image, title, price, options: selected, quantity: 1 };
+    addOrUpdateToCart(uid, product);
   };
   const {
     state: {

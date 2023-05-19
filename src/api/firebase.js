@@ -7,7 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from 'firebase/auth';
-import { getDatabase, ref, child, get, set } from 'firebase/database';
+import { getDatabase, ref, child, get, set, remove } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -93,4 +93,27 @@ export async function getProduct() {
     .catch((error) => {
       console.error(error);
     });
+}
+
+// Carts
+// 주어진 사용자의 id에 해당하는 쇼핑카트를 보여줄 것
+export async function getCart(userId) {
+  return get(ref(db, `carts/${userId}`)) //
+    .then((snapshot) => {
+      const items = snapshot.val() || {};
+      return Object.values(items);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function addOrUpdateToCart(userId, product) {
+  // 해당하는 경로에 product를 추가해주는 것!
+  return set(ref(db, `carts/${userId}/${product.id}`), product);
+}
+// 삭제시에는 제품정보 모든 것이 필요가 없음, 필요한 ProductId만 받아오자!
+// firebase에서는 remove() 호출
+export async function removeFromCart(userId, productId) {
+  return remove(ref(db, `carts/${userId}/${productId}`));
 }
