@@ -101,6 +101,7 @@ export async function getCart(userId) {
   return get(ref(db, `carts/${userId}`)) //
     .then((snapshot) => {
       const items = snapshot.val() || {};
+      console.log('items', items);
       return Object.values(items);
     })
     .catch((error) => {

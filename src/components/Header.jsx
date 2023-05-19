@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { User } from './User';
 import { Button } from './ui/Button';
 import { useUserContext } from '../context/UserContext';
+import { CartStatus } from './ui/CartStatus';
 
 export const Header = () => {
   const { user, login, logout } = useUserContext();
@@ -16,7 +17,11 @@ export const Header = () => {
       </Link>
       <nav className='flex flex-row items-center text-2xl gap-4'>
         <Link to='/products'>Products</Link>
-        {user && <Link to='/carts'>Carts</Link>}
+        {user && (
+          <Link to='/carts'>
+            <CartStatus />
+          </Link>
+        )}
         {user && user.isAdmin && (
           <Link to='/products/new'>
             <BsFillPencilFill />
