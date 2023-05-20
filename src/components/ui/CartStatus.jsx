@@ -1,12 +1,12 @@
 import React from 'react';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
-import { useQuery } from 'react-query';
-import { getCart } from '../../api/firebase';
-import { useUserContext } from '../../context/UserContext';
+import useCarts from '../../hooks/useCarts';
 
 export const CartStatus = () => {
-  const { uid } = useUserContext();
-  const { data: products } = useQuery(['carts'], () => getCart(uid));
+  // cartsQuery의 data: products에 해당하는 것을 낱개로 가져온다 생각!
+  const {
+    cartsQuery: { data: products },
+  } = useCarts();
   return (
     <div className='relative'>
       <AiOutlineShoppingCart className='text-4xl' />

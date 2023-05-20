@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
-import { addOrUpdateToCart } from '../api/firebase';
-import { useUserContext } from '../context/UserContext';
+import useCarts from '../hooks/useCarts';
 
 export const ProductDetail = () => {
   // 구조분해할당 가능
-  const { uid } = useUserContext();
-
-  const handleSelect = (e) => {
-    setSelected(e.target.value);
-  };
-  const handleClick = () => {
-    // 장바구니에 추가하면 됩니다. (옵션은 배열형태가아닌, 선택된 것만 가져와야함)
-    const product = { id, image, title, price, options: selected, quantity: 1 };
-    addOrUpdateToCart(uid, product);
-  };
+  const { addOrUpdateItem } = useCarts();
   const {
     state: {
       product: { id, image, title, description, category, price, options },
     },
   } = useLocation();
+  const [success, setSuccess] = useState();
   const [selected, setSelected] = useState(options && options[0]);
+  const handleSelect = (e) => {
+    setSelected(e.target.value);
+  };
+  const handleClick = (e) => {
+    // 장바구니에 추가하면 됩니다. (옵션은 배열형태가아닌, 선택된 것만 가져와야함)
+    const product = { id, image, title, price, options: selected, quantity: 1 };
+    addOrUpdateItem.mutate(product, {
+      onSuccess: () => {
+        setSuccess('장바구니에 추가되었습니다.');
+        setTimeout(() => setSuccess(null), 3000);
+      },
+    });
+  };
   return (
     <>
       <p className='mx-12 mt-4 text-gray-700'>{category}</p>
@@ -49,6 +53,7 @@ export const ProductDetail = () => {
                 ))}
             </select>
           </div>
+          {success && <p className='my-2 text-brand font-bold'>{success}</p>}
           <Button text='장바구니에 추가' onClick={handleClick} />
         </div>
       </section>
