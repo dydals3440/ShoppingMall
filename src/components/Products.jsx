@@ -8,7 +8,7 @@ export const Products = () => {
     isLoading,
     error,
     data: products,
-  } = useQuery(['products'], getProduct); // firebase에서 정의한 getProduct를 통해 모든 제품의 정보를 가져옴
+  } = useQuery(['products'], getProduct, { staleTime: 1000 * 60 }); // firebase에서 정의한 getProduct를 통해 모든 제품의 정보를 가져옴
   return (
     <>
       {isLoading && <p>Loading....</p>}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { uploadImage } from '../api/upload';
 import { addNewProduct } from '../api/firebase';
+import { useMutation, useQueryClient } from 'react-query';
 
 export const NewProducts = () => {
   // 1. 사용자가 입력한 데이터를 담을수 있는 상태 초기화
@@ -10,21 +11,42 @@ export const NewProducts = () => {
   // Upload가 되었는지 UI상 확인
   const [isUploading, setIsUploading] = useState(false);
   const [success, setSuccess] = useState();
+
+  const queryClient = useQueryClient();
+  // 인자로 두개를 받아, addNewProduct 함수를 호출
+  const addProduct = useMutation(
+    ({ product, url }) => addNewProduct(product, url),
+    {
+      onSuccess: () => queryClient.invalidateQueries(['products']),
+    }
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsUploading(true);
     // 제품의 사진을 Cloudinary에 업로드 하고 URL을 획득
     uploadImage(file)
       .then((url) => {
+        addProduct.mutate(
+          { product, url },
+          {
+            onSuccess: () => {
+              setSuccess('성공적으로 제품이 추가되었습니다.');
+              setTimeout(() => {
+                setSuccess(null);
+              }, 4000);
+            },
+          }
+        );
         console.log(url);
-        // Firebase에 새로운 제품을 추가합니다.
-        addNewProduct(product, url) //
-          .then(() => {
-            setSuccess('성공적으로 제품이 추가되었습니다.');
-            setTimeout(() => {
-              setSuccess(null);
-            }, 4000);
-          });
+        // // Firebase에 새로운 제품을 추가합니다.
+        // addNewProduct(product, url) //
+        //   .then(() => {
+        //     setSuccess('성공적으로 제품이 추가되었습니다.');
+        //     setTimeout(() => {
+        //       setSuccess(null);
+        //     }, 4000);
+        //   });
       })
       .finally(() => setIsUploading(false));
   };
