@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { uploadImage } from '../api/upload';
-import { addNewProduct } from '../api/firebase';
-import { useMutation, useQueryClient } from 'react-query';
+import useProducts from '../hooks/useProducts';
 
 export const NewProducts = () => {
   // 1. 사용자가 입력한 데이터를 담을수 있는 상태 초기화
@@ -12,14 +11,15 @@ export const NewProducts = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [success, setSuccess] = useState();
 
-  const queryClient = useQueryClient();
-  // 인자로 두개를 받아, addNewProduct 함수를 호출
-  const addProduct = useMutation(
-    ({ product, url }) => addNewProduct(product, url),
-    {
-      onSuccess: () => queryClient.invalidateQueries(['products']),
-    }
-  );
+  // const queryClient = useQueryClient();
+  // // 인자로 두개를 받아, addNewProduct 함수를 호출
+  // const addProduct = useMutation(
+  //   ({ product, url }) => addNewProduct(product, url),
+  //   {
+  //     onSuccess: () => queryClient.invalidateQueries(['products']),
+  //   }
+  // );
+  const { addProducts } = useProducts();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export const NewProducts = () => {
     // 제품의 사진을 Cloudinary에 업로드 하고 URL을 획득
     uploadImage(file)
       .then((url) => {
-        addProduct.mutate(
+        addProducts.mutate(
           { product, url },
           {
             onSuccess: () => {

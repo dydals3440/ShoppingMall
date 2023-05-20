@@ -1,14 +1,16 @@
 import React from 'react';
-import { getProduct } from '../api/firebase';
-import { useQuery } from 'react-query';
 import { ProductCard } from './ProductCard';
+import useProducts from '../hooks/useProducts';
 
 export const Products = () => {
+  // const {
+  //   isLoading,
+  //   error,
+  //   data: products,
+  // } = useQuery(['products'], getProduct, { staleTime: 1000 * 60 }); // firebase에서 정의한 getProduct를 통해 모든 제품의 정보를 가져옴 위의 코드를 훅으로 만들어 사용
   const {
-    isLoading,
-    error,
-    data: products,
-  } = useQuery(['products'], getProduct, { staleTime: 1000 * 60 }); // firebase에서 정의한 getProduct를 통해 모든 제품의 정보를 가져옴
+    productsQuery: { isLoading, error, data: products },
+  } = useProducts();
   return (
     <>
       {isLoading && <p>Loading....</p>}

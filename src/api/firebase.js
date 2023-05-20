@@ -81,7 +81,7 @@ export async function addNewProduct(product, imageUrl) {
 }
 
 // firebase에서 get을 통해 만든 db에 접근
-export async function getProduct() {
+export async function getProducts() {
   return get(ref(db, 'products')) //
     .then((snapshot) => {
       if (snapshot.exists()) {
